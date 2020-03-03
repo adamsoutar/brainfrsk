@@ -1,11 +1,13 @@
-mod tape;
+mod vm;
 mod instructions;
 
 fn main() {
-    let tape = tape::new_tape();
-    let instrs = instructions::read_from_file("test.bf").unwrap();
+    let instrs = instructions::read_from_file("test.bf");
 
-    for i in instrs {
-        println!("{:?}", i);
+    if let Ok(i) = instrs {
+        vm::run_for_instructions(i);
+    } else {
+        println!("Failed to lex 'test.bf'
+{:?}", instrs.err().unwrap())
     }
 }
