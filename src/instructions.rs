@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::error::Error;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Instruction {
   Left,
   Right,

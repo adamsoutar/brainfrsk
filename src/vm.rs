@@ -35,6 +35,49 @@ impl VM {
     self.tape.set_value(*chr_byte);
   }
 
+  fn bracket_match (&mut self, backwards: bool) -> Result<usize, &'static str> {
+    let start = if backwards { Instruction::LoopEnd } else { Instruction::LoopStart };
+    let end = if backwards { Instruction::LoopStart } else { Instruction::LoopEnd };
+
+    let mut ignore = 0;
+    // For all of the instructions onwards from here
+    let x = if backwards { self.instructions.len() } else { self.ins_ptr };
+    let y = if backwards { self.ins_ptr } else { self.instructions.len() };
+    for ic in x..y {
+      let val = &self.instructions[ic];
+      
+      if *val == start {
+        ignore += 1;
+      }
+
+      if *val == end {
+        if ignore == 0 {
+          return Ok(ic)
+        }
+        ignore -= 1;
+      }
+    };
+
+    Err("Bracket doesn't have a match")
+  }
+
+  fn start_loop (&mut self) {
+    if self.tape.get_value() != 0 {
+      return
+    }
+
+    let end = self.bracket_match(false).unwrap();
+    self.ins_ptr = end;
+  }
+  fn end_loop (&mut self) {
+    if self.tape.get_value() == 0 {
+      return
+    }
+
+    let start = self.bracket_match(true).unwrap();
+    self.ins_ptr = start;
+  }
+
   fn interpret_instruction (&mut self) {
     let i = &self.instructions[self.ins_ptr];
     
@@ -45,8 +88,8 @@ impl VM {
       Instruction::Decrement => self.dec(),
       Instruction::Output => self.output(),
       Instruction::Input => self.input(),
-      // TODO: The rest
-      _ => ()
+      Instruction::LoopStart => self.start_loop(),
+      Instruction::LoopEnd => self.end_loop()
     }
   }
 
