@@ -43,23 +43,17 @@ impl VM {
       }
     }
 
-    //println!("Ptr: {}", self.ins_ptr);
     for ic in r {
-      //println!("ic: {}", ic);
       let val = &self.instructions[ic];
       
       if *val == start {
-        //println!("Read a start");
-        //println!("Bumping up ignore");
         ignore += 1;
       }
 
       if *val == end {
-        //println!("Read an end");
         if ignore == 0 {
           return Ok(ic)
         }
-        //println!("Bumping down ignore");
         ignore -= 1;
       }
     };
