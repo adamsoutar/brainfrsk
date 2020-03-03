@@ -12,7 +12,7 @@ However, there are definitely a few small isues, such as it doesn't
 seem to output (flush stdout?) until the program is over, so
 infinitely running programs like cat don't print anything.
 
-As my first Rust program, please excuse the code quality or any 
+As my first Rust code, please excuse the code quality or any 
 bodges required to get the program running, and if you have any
-tips (eg. I don't think [this]() is the idiomatic way to do the 
+tips (eg. I don't think [this](https://github.com/adamsoutar/brainfrsk/blob/master/src/vm.rs#L35) is the idiomatic way to do the 
 iterator in `bracket_match`), they'd be greatly appreciated.
