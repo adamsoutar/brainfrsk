@@ -40,10 +40,18 @@ impl VM {
     let end = if backwards { Instruction::LoopStart } else { Instruction::LoopEnd };
 
     let mut ignore = 0;
-    // For all of the instructions onwards from here
-    let x = if backwards { self.instructions.len() } else { self.ins_ptr };
-    let y = if backwards { self.ins_ptr } else { self.instructions.len() };
-    for ic in x..y {
+    let mut r: Vec<usize> = Vec::new();
+    if backwards {
+      for x in (0..self.ins_ptr).rev() {
+        r.push(x);
+      }
+    } else {
+      for x in self.ins_ptr..self.instructions.len() {
+        r.push(x);
+      }
+    }
+
+    for ic in r {
       let val = &self.instructions[ic];
       
       if *val == start {
