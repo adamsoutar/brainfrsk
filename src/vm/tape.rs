@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 pub struct Tape {
     values: Vec<u8>,
     pointer: usize
@@ -25,14 +23,30 @@ impl Tape {
         self.pointer -= 1;
     }
 
+    // These functions simulate integer over/underflow
+    pub fn increment (&mut self) {
+        let val = self.values[self.pointer];
+        if val == 255 {
+            self.values[self.pointer] = 0;
+        } else {
+            self.values[self.pointer] += 1;
+        }
+    }
+    pub fn decrement (&mut self) {
+        let val = self.values[self.pointer];
+        if val == 0 {
+            self.values[self.pointer] = 255;
+        } else {
+            self.values[self.pointer] -= 1;
+        }
+    }
+
     pub fn get_value (&self) -> u8 {
-        let idx: usize = self.pointer.try_into().unwrap();
-        self.values[idx]
+        self.values[self.pointer]
     }
 
     pub fn set_value(&mut self, val: u8) {
-        let idx: usize = self.pointer.try_into().unwrap();
-        self.values[idx] = val;
+        self.values[self.pointer] = val;
     }
 }
 

@@ -15,14 +15,6 @@ pub struct VM {
 }
 
 impl VM {
-  fn inc (&mut self) {
-    let val = self.tape.get_value();
-    self.tape.set_value(val + 1);
-  }
-  fn dec  (&mut self) {
-    let val = self.tape.get_value();
-    self.tape.set_value(val - 1);
-  }
   fn output (&self) {
     let ch = char::from(self.tape.get_value());
     print!("{}", ch);
@@ -46,22 +38,28 @@ impl VM {
         r.push(x);
       }
     } else {
-      for x in self.ins_ptr..self.instructions.len() {
+      for x in self.ins_ptr+1..self.instructions.len() {
         r.push(x);
       }
     }
 
+    //println!("Ptr: {}", self.ins_ptr);
     for ic in r {
+      //println!("ic: {}", ic);
       let val = &self.instructions[ic];
       
       if *val == start {
+        //println!("Read a start");
+        //println!("Bumping up ignore");
         ignore += 1;
       }
 
       if *val == end {
+        //println!("Read an end");
         if ignore == 0 {
           return Ok(ic)
         }
+        //println!("Bumping down ignore");
         ignore -= 1;
       }
     };
@@ -92,8 +90,8 @@ impl VM {
     match i {
       Instruction::Left => self.tape.left(),
       Instruction::Right => self.tape.right(),
-      Instruction::Increment => self.inc(),
-      Instruction::Decrement => self.dec(),
+      Instruction::Increment => self.tape.increment(),
+      Instruction::Decrement => self.tape.decrement(),
       Instruction::Output => self.output(),
       Instruction::Input => self.input(),
       Instruction::LoopStart => self.start_loop(),
